@@ -1,7 +1,7 @@
 # Sporty v2 테이블 명세서
 
 > 출처: `Sporty_MSA_2조_테이블_명세서(1).xlsx` · v0.1 · 팀 합의 전 설계 초안. 1차 코드 정적 확인은 2차 구현·실행 검증을 뜻하지 않습니다.
-> **최신 DB 대조:** [서비스별 DDL R4 검토](schema-r4-review.md)와 [확정 API v1.0](../contracts/api-spec-v1.0.md)을 먼저 확인하세요. 이 v0.1 문서는 원본 보존용이며 현재 서비스별 DB 이름·테이블·Kafka 설계와 다릅니다. R4도 아직 API와의 불일치 해소 및 실제 적용 검증이 필요합니다.
+> **최신 DB 대조:** [서비스별 R7 설계](schema-r7.md)·[R7 DDL](01_Sporty_v2_A_R7_DDL.sql)과 [확정 API v1.0](../contracts/api-spec-v1.0.md)을 먼저 확인하세요. 이 v0.1 문서는 원본 보존용이며 현재 서비스별 DB 이름·테이블·Kafka 설계와 다릅니다. R7은 신규 빈 환경용이며 실제 적용 검증은 아직 필요합니다. [R4 검토](schema-r4-review.md)는 이전 버전의 이력입니다.
 
 
 ## 테이블 개요
