@@ -1,5 +1,7 @@
 # Sporty_v2 서비스별 DB DDL R4 대조
 
+> **이전 버전 검토 기록:** 최신 전달본은 [R7 설계·대조](schema-r7.md)와 [R7 DDL](01_Sporty_v2_A_R7_DDL.sql)입니다. 이 문서의 R4 미해결 사항 중 `user.role`, Saga `claim_token`·상태는 R7에서 바뀌었습니다. 아래 내용은 R4 당시의 대조 결과로 읽으세요.
+
 > 기준: DB 담당자가 전달한 `Sporty_v2_A_DDL.sql` R4와 `Sporty_v2_A_permissions.sql.template`, 팀 확정 [API 계약 v1.0](../contracts/api-spec-v1.0.md). 2026-10-31 정적 대조 기록입니다. **실행 DB의 스키마 조회·DDL 적용·데이터 이관·통합 테스트는 수행하지 않았습니다.** R4는 신규 빈 환경 설치용이며 1차 `sporty` DB에 적용하는 마이그레이션이 아닙니다.
 
 ## 현재 DDL 구성
