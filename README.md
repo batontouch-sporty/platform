@@ -9,13 +9,16 @@ Sporty는 서울시 공공체육시설을 찾고 운동 매치를 개설·참여
 1. [확정 API 계약 v1.0](docs/contracts/api-spec-v1.0.md) — 외부 31개·내부 4개 경로, Gateway 인증, 관리자 통계·Prometheus 조회. 상세 JSON과 오류는 팀 확정 PDF 원본 부록 참조
 2. [최신 범위와 v0.1 차이](docs/decisions/2026-10-30-scope-update.md) — 확정 API와 구분되는 Kafka·DB·검증 작업
 3. [수행계획서 v0.1](docs/planning/project-plan-v0.1.md) · [요구사항 v0.1](docs/requirements/requirements-v0.1.md) — 원본 Word 변환
-4. [서비스별 DB DDL R4 대조](docs/data/schema-r4-review.md) — DB 담당자 전달본과 확정 API의 불일치 및 적용 전 확인 사항
-5. [API·Kafka 계약 v0.1](docs/contracts/api-contract-v0.1.md) · [테이블 명세 v0.1](docs/data/table-spec-v0.1.md) — 원본 Excel 시트를 각 문서의 장으로 변환한 역사적 초안
-6. [테스트 케이스 v0.1](docs/testing/test-cases-v0.1.md) — 원본 Excel 시트 변환, 전체 `Not Run`
+4. [서비스별 DB 설계 R7](docs/data/schema-r7.md) · [R7 DDL 원본](docs/data/01_Sporty_v2_A_R7_DDL.sql) — DB 소유권·탈퇴 Saga·운영 알림 미결정 사항과 적용 전 확인 사항
+5. [서비스별 DB DDL R4 대조](docs/data/schema-r4-review.md) — 이전 DDL의 검토 이력
+6. [API·Kafka 계약 v0.1](docs/contracts/api-contract-v0.1.md) · [테이블 명세 v0.1](docs/data/table-spec-v0.1.md) — 원본 Excel 시트를 각 문서의 장으로 변환한 역사적 초안
+7. [테스트 케이스 v0.1](docs/testing/test-cases-v0.1.md) — 원본 Excel 시트 변환, 전체 `Not Run`
 
 ## 상태와 변경 규칙
 
 **HTTP API는 팀 확정 `Sporty_v2 API 명세서 v1.0`(2026-10-30)이 기준입니다.** 저장소의 `api-spec-v1.0.md`는 그 내용을 탐색하기 쉽게 정리한 Markdown 요약입니다. 상세 요청·응답 JSON 및 API별 오류 코드는 원본 PDF 부록을 우선합니다.
+
+DB 문서는 R7 DDL과 그 [정적 대조](docs/data/schema-r7.md)를 먼저 확인하세요. 이는 신규 빈 환경용 설계이며 실제 DB 적용이나 서비스 연동 성공을 뜻하지 않습니다.
 
 나머지 v0.1 산출물은 **팀 합의 전 초안**입니다. 변환 과정에서 원문 ID(`USR`, `EM`, `MSA`, `API`, `EVT`, `TC`, `D`)와 값, 시트 구성을 유지했습니다. `v0.1`의 4개 서비스, AI projection 이벤트, 단순 회원 탈퇴 흐름은 최신 API·범위와 다릅니다. 문서의 계획·예시는 구현 완료나 실행 성공의 증거가 아닙니다.
 
