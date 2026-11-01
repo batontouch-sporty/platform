@@ -9,10 +9,11 @@ Sporty는 서울시 공공체육시설을 찾고 운동 매치를 개설·참여
 1. [확정 API 계약 v1.0](docs/contracts/api-spec-v1.0.md) — 외부 31개·내부 4개 경로, Gateway 인증, 관리자 통계·Prometheus 조회. 상세 JSON과 오류는 팀 확정 PDF 원본 부록 참조
 2. [최신 범위와 v0.1 차이](docs/decisions/2026-10-30-scope-update.md) — 확정 API와 구분되는 Kafka·DB·검증 작업
 3. [수행계획서 v0.1](docs/planning/project-plan-v0.1.md) · [요구사항 v0.1](docs/requirements/requirements-v0.1.md) — 원본 Word 변환
-4. [서비스별 DB 설계 R8](docs/data/schema-r8.md) · [R8 신규 설치 SQL](docs/data/02_Sporty_v2_A_R8_DDL.sql) · [R7→R8 변경 SQL](docs/data/03_Sporty_v2_R7_to_R8.sql) · [적용 결과 확인 SQL](docs/data/04_Sporty_v2_R8_verify.sql) — 현재 스키마·적용 대상·검사 항목
-5. [R7 설계](docs/data/schema-r7.md) · [R7 DDL](docs/data/01_Sporty_v2_A_R7_DDL.sql) · [R4 대조](docs/data/schema-r4-review.md) — 이전 스키마와 변경 이력
-6. [API·Kafka 계약 v0.1](docs/contracts/api-contract-v0.1.md) · [테이블 명세 v0.1](docs/data/table-spec-v0.1.md) — 원본 Excel 시트를 각 문서의 장으로 변환한 역사적 초안
-7. [테스트 케이스 v0.1](docs/testing/test-cases-v0.1.md) — 원본 Excel 시트 변환, 전체 `Not Run`
+4. [로컬 인프라 구성](docs/architecture/infra-overview.md) — 전달된 5개 업무 서비스 그림과 최신 Compose의 역할·포트·관측 구성 대조
+5. [서비스별 DB 설계 R8](docs/data/schema-r8.md) · [R8 신규 설치 SQL](docs/data/02_Sporty_v2_A_R8_DDL.sql) · [R7→R8 변경 SQL](docs/data/03_Sporty_v2_R7_to_R8.sql) · [적용 결과 확인 SQL](docs/data/04_Sporty_v2_R8_verify.sql) — 현재 스키마·적용 대상·검사 항목
+6. [R7 설계](docs/data/schema-r7.md) · [R7 DDL](docs/data/01_Sporty_v2_A_R7_DDL.sql) · [R4 대조](docs/data/schema-r4-review.md) — 이전 스키마와 변경 이력
+7. [API·Kafka 계약 v0.1](docs/contracts/api-contract-v0.1.md) · [테이블 명세 v0.1](docs/data/table-spec-v0.1.md) — 원본 Excel 시트를 각 문서의 장으로 변환한 역사적 초안
+8. [테스트 케이스 v0.1](docs/testing/test-cases-v0.1.md) — 원본 Excel 시트 변환, 전체 `Not Run`
 
 ## 상태와 변경 규칙
 
