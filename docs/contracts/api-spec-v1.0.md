@@ -60,7 +60,7 @@
 
 | ID | 메서드 | Gateway 경로 | 권한 | 성공 | 핵심 계약 |
 | --- | --- | --- | --- | --- | --- |
-| A20 | GET | `/facility-service/api/services` | 공개 | 200 | `region,serviceName,serviceType,status,startTime,endTime` 조건 → 배열. 시작 시각이 종료보다 늦으면 400 `INVALID_SEARCH_CONDITION` |
+| A20 | GET | `/facility-service/api/services` | 공개 | 200 | `region,serviceName,serviceType,status,startTime,endTime` 조건 → 활성 시설 배열. 시작 시각이 종료보다 늦으면 400 `INVALID_SEARCH_CONDITION` |
 | A21 | GET | `/facility-service/api/services/{serviceId}` | 공개 | 200 | `serviceId` 경로 값은 DB PK(Long); 상세 응답의 `id`는 DB PK, `serviceId` 문자열은 서울시 원본 SVCID. `reservationDeadlineAt` 포함 |
 
 서울시 공공데이터는 매일 03:00 동기화하며, 외부 예약은 `url` 링크로 안내합니다.
@@ -70,10 +70,10 @@
 | ID | 메서드 | Gateway 경로 | 권한 | 성공 | 핵심 계약 |
 | --- | --- | --- | --- | --- | --- |
 | A22 | POST | `/ai-service/api/ai/matches/search` | 공개 | 200 | `{prompt}` → `{conditions,criteria,matches,fallback}`. LLM 실패 시 조건 검색으로 대체하고 `fallback:true` |
-| A23 | POST | `/ai-service/api/ai/matches` | 인증 | 200 | `{prompt}` → `{initialValues,facilityCandidates}`. 초안은 저장하지 않음; 시설 후보는 P1, P0에서는 빈 배열. LLM 실패 시 503 `AI_UNAVAILABLE` |
+| A23 | POST | `/ai-service/api/ai/matches` | 인증 | 200 | `{prompt}` → `{initialValues,facilityCandidates}`. 초안은 저장하지 않음; 시설 후보는 I4로 최대 5개(못 찾거나 I4 실패 시 `[]`). LLM 실패 시 503 `AI_UNAVAILABLE` |
 | A24 | GET | `/ai-service/api/ai/matches/recommendations` | 인증 | 200 | `{matches,fallback}` (최대 3개); LLM 실패 시 최신순 후보 반환·`fallback:true` |
 
-AI의 회원 정보는 I1, 시설 후보는 I4(P1), 매치 후보는 `match-service`의 공개 `GET /api/matches`를 Feign으로 조회합니다. 별도의 AI 조회 모델 API는 없습니다.
+AI의 회원 정보는 I1, 시설 후보는 I4(facility-service 내부 API, 구현 완료), 매치 후보는 `match-service`의 공개 `GET /api/matches`·`GET /api/matches/me`를 Feign으로 조회합니다. 별도의 AI 조회 모델 API는 없습니다.
 
 ## 알림 (`notification-service`: 8085)
 
@@ -103,7 +103,7 @@ AI의 회원 정보는 I1, 시설 후보는 I4(P1), 매치 후보는 `match-serv
 | I1 | user | `GET /internal/users/{id}` | 200 `{id,gender,status,district,sportTypes}` | match 참가 검증, AI 개인 추천 |
 | I2 | user | `GET /internal/users?ids=1,2,3` | 200 `[{id,profileId,nickname,imageUrl}]` | match 상세 참가자 표시. 없는 ID는 결과에서 제외 |
 | I3 | facility | `GET /internal/facilities/{id}` | 200 `{id,name,startTime,endTime,active,url,locationName,region,isFree}` | match 생성·수정 검증·시설 정보 복사. 비활성 시설도 200 `active:false` |
-| I4 | facility | `GET /internal/facilities?district=SONGPA&sport=BASKETBALL` | 200 시설 후보 배열 | P1, 활성 시설 최대 5건; AI 초안 시설 후보. `district`는 자치구 코드 |
+| I4 | facility | `GET /internal/facilities?district=SONGPA&sport=BASKETBALL` | 200 시설 후보 배열 | P1(구현 완료), 활성 시설 최대 5건; AI 초안 시설 후보. `district`는 자치구 코드 |
 
 내부 API 실패 정책: I1 실패 시 참가 거절 503, I2 실패 시 닉네임 `알 수 없음`, I3 실패 시 생성·수정 거절, I4 실패 시 후보 없이 초안 반환. 내부 호출의 접근 제어와 서비스 인증 방식은 인프라 구현에서 검증해야 합니다.
 
@@ -158,7 +158,7 @@ AI의 회원 정보는 I1, 시설 후보는 I4(P1), 매치 후보는 `match-serv
 
 | ID | 요청·파라미터 | 성공 응답·동작 | API별 오류 |
 | --- | --- | --- | --- |
-| A20 시설 목록 | `GET /facility-service/api/services`; 선택 조건 `region,serviceName,serviceType,status,startTime,endTime`. 시간은 `HH:mm`, `region`은 자치구명 | `200` 배열(없으면 `[]`). 항목 `serviceId`(DB PK), `serviceName,serviceType,region,locationName,contact,status,startTime,endTime,isFree,url,reservationDeadlineAt` | `400 INVALID_SEARCH_CONDITION`(시간 형식 오류 또는 시작 시각 > 종료 시각) |
+| A20 시설 목록 | `GET /facility-service/api/services`; 선택 조건 `region,serviceName,serviceType,status,startTime,endTime`. 시간은 `HH:mm`, `region`은 자치구명. `startTime`·`endTime`은 그 시간대에 운영하는 시설을 찾는 조건(시설 시작 ≤ `startTime`, 시설 종료 ≥ `endTime`) | `200` 활성 시설만 배열(없으면 `[]`). 항목 `serviceId`(DB PK), `serviceName,serviceType,region,locationName,contact,status,startTime,endTime,isFree,url,reservationDeadlineAt` | `400 INVALID_SEARCH_CONDITION`(시간 형식 오류 또는 시작 시각 > 종료 시각) |
 | A21 시설 상세 | `GET /facility-service/api/services/{serviceId}`; 경로의 `serviceId: Long`은 DB PK | `200` `{id,serviceId,status,serviceName,paymentMethod,locationName,serviceType,region,contact,latitude,longitude,startTime,endTime,url,reservationDeadlineAt}`. `id`는 DB PK, 본문의 문자열 `serviceId`는 서울시 원본 SVCID. 활성 서비스만 조회 | `400 INVALID_SERVICE_ID`, `404 SERVICE_NOT_FOUND`(없음·비활성) |
 
 서울시 공공 API 장애 시에도 DB에 이미 저장한 시설을 조회합니다. 예약은 응답의 `url`로 외부 사이트에 연결합니다. A21의 빈 문자열은 `정보없음`, `paymentMethod`는 `무료/유료/정보없음`입니다.
@@ -167,11 +167,11 @@ AI의 회원 정보는 I1, 시설 후보는 I4(P1), 매치 후보는 `match-serv
 
 | ID | 요청·파라미터 | 성공 응답·동작 | API별 오류 |
 | --- | --- | --- | --- |
-| A22 자연어 검색 | `POST /ai-service/api/ai/matches/search`; `{prompt}` 1~500자, 공개 | `200` `{conditions:[{label,value}],matches,criteria,fallback}`. `matches`는 매치 목록 형식, `criteria`는 검색 수정 폼 초기값. LLM 실패·시간초과 때 조건 검색으로 대체하고 `fallback:true` | `400 INVALID_INPUT`, `400 AI_CONDITION_NOT_FOUND`, `400 AI_UNSUPPORTED_SPORT` |
-| A23 매치 초안 | `POST /ai-service/api/ai/matches`; `{prompt}` 1~500자, 인증 | `200` `{initialValues:{sportType,region,startAt,endAt,maxParticipant,skillLevel,genderGroup,title,description},facilityCandidates:[]}`. P0에서 후보 `[]`; P1에서 I4로 활성 후보 최대 5개. DB 저장 없음, 폼 확인 후 A9 호출. 종료 시각 없으면 시작+2시간, 성별 구성 없으면 `MIXED`, 제목 50자·설명 500자 제한 | `400 INVALID_INPUT`, `400 AI_DRAFT_INSUFFICIENT`, `400 AI_UNSUPPORTED_SPORT`, `401 UNAUTHORIZED`, `503 AI_UNAVAILABLE`(LLM 실패·시간초과, 직접 입력 안내) |
-| A24 맞춤 추천 | `GET /ai-service/api/ai/matches/recommendations`; 인증 | `200` `{matches,fallback}`. 후보 최대 20개에서 LLM이 순서 선택, 최대 3개 반환. 실패 시 최신순 최대 3개와 `fallback:true`, 후보 없으면 `[]` | `401 UNAUTHORIZED`, `404 USER_NOT_FOUND/PROFILE_NOT_FOUND`, `500 AI_RECOMMEND_FAILED`(대체 결과도 실패) |
+| A22 자연어 검색 | `POST /ai-service/api/ai/matches/search`; `{prompt}` 1~500자, 공개 | `200` `{conditions:[{label,value}],matches,criteria,fallback}`. `matches`는 매치 목록 형식, `criteria`는 검색 수정 폼 초기값. LLM 실패·시간초과 때 문장 속 종목·자치구 단어로 검색(단어가 없으면 모집 중 매치)하고 `conditions:[]`, `fallback:true` | `400 INVALID_INPUT`, `400 AI_CONDITION_NOT_FOUND`(LLM이 정상 응답했는데 조건 없음), `400 AI_UNSUPPORTED_SPORT`, `503 AI_UNAVAILABLE`(match 목록 호출 실패) |
+| A23 매치 초안 | `POST /ai-service/api/ai/matches`; `{prompt}` 1~500자, 인증 | `200` `{initialValues:{sportType,region,startAt,endAt,maxParticipant,skillLevel,genderGroup,title,description},facilityCandidates:[]}`. 시설 후보는 초안의 자치구·종목을 코드(예: `SONGPA`, `BASKETBALL`)로 바꿔 I4로 활성 후보 최대 5개를 받음. 자치구·종목이 둘 다 없거나 자치구를 코드로 바꿀 수 없거나 I4가 실패하면 `[]`(초안은 200). DB 저장 없음, 폼 확인 후 A9 호출. 종료 시각 없으면 시작+2시간, 성별 구성 없으면 `MIXED`, 제목 50자·설명 500자 제한 | `400 INVALID_INPUT`, `400 AI_DRAFT_INSUFFICIENT`, `400 AI_UNSUPPORTED_SPORT`, `401 UNAUTHORIZED`, `503 AI_UNAVAILABLE`(LLM 실패·시간초과, 직접 입력 안내) |
+| A24 맞춤 추천 | `GET /ai-service/api/ai/matches/recommendations`; 인증 | `200` `{matches,fallback}`. 후보 최대 20개에서 LLM이 순서 선택, 최대 3개 반환. LLM 실패·후보 ID를 못 고르면 최신순(matchId 내림차순) 최대 3개와 `fallback:true`, I1 장애면 혼성 매치 최신순 3개와 `fallback:true`, 후보 없으면 `[]` | `401 UNAUTHORIZED`, `404 USER_NOT_FOUND`(I1이 404), `500 AI_RECOMMEND_FAILED`(매치 목록 호출까지 실패) |
 
-A22·A24의 매치 후보는 `match-service`의 공개 `GET /api/matches`를 Feign으로 조회합니다. A24는 I1에서 자치구·선호 종목·성별을 받고, 모집중·시작 전·본인 미참가 매치만 후보로 사용합니다. AI 지표 예시는 `ai.request(type=search|draft|recommend, outcome=...)`이며 실제 계측 여부는 구현에서 확인합니다.
+A22·A24의 매치 후보는 `match-service`의 공개 `GET /api/matches`를 Feign으로 조회합니다. A24는 I1에서 자치구·선호 종목·성별을 받고, 모집중·시작 전·본인 미참가 매치만 후보로 사용합니다. `GET /api/matches/me` 호출이 실패하면 본인 매치 제외 없이 추천을 계속합니다. AI 지표는 `ai.request(type=search|draft|recommend, outcome=success|fallback|rejected|error)`로 계측합니다(4xx 업무 거절은 `rejected`, 5xx와 예상 못 한 예외는 `error`).
 
 ### A25~A27 알림
 
@@ -201,7 +201,7 @@ Gateway는 A30·A31 두 Prometheus 조회 경로만 열며, 인증 헤더의 JWT
 | I1 회원 단건 | user-service `GET /internal/users/{id}`; `id: Long` | `200` `{id,gender,status,district,sportTypes}`. match 참가 전 검사, AI 추천 정보 | `404 USER_NOT_FOUND`; match는 회원 확인 불가 시 참가를 `503`으로 거절 |
 | I2 회원 일괄 | user-service `GET /internal/users?ids=1,2,3`; 쉼표 구분 회원 ID | `200` `[{id,profileId,nickname,imageUrl}]`; 없는 ID 제외, 비어 있으면 `[]` | 호출 실패 시 매치 상세에서 닉네임 `알 수 없음`으로 대체 |
 | I3 시설 단건 | facility-service `GET /internal/facilities/{id}`; 시설 DB PK | `200` `{id,name,startTime,endTime,active,url,locationName,region,isFree}`. 비활성 시설도 `active:false`로 `200`; match는 생성·수정 시 시설 정보 복사 | `404 SERVICE_NOT_FOUND`; 호출 실패 시 매치 생성·수정 거절. 상세는 저장된 스냅샷 사용 |
-| I4 시설 후보 **P1** | facility-service `GET /internal/facilities?district=SONGPA&sport=BASKETBALL`; 자치구·종목 코드 | `200` 활성 시설 후보 최대 5개 `[{id,name,locationName,region,startTime,endTime,isFree,url}]`; 없으면 `[]` | 호출 실패 시 AI 초안을 후보 없이 반환 |
+| I4 시설 후보 **P1** | facility-service `GET /internal/facilities?district=SONGPA&sport=BASKETBALL`; 자치구·종목 코드, 둘 다 선택 | `200` 활성 시설 후보 최대 5개(id 오름차순) `[{id,name,locationName,region,startTime,endTime,isFree,url}]`; 없으면 `[]`. 하나만 주면 그 조건으로만 조회, 모르는 코드가 하나라도 있거나 둘 다 없거나 대응 시설이 없는 종목(예: `RUNNING`)이면 `[]` | 호출 실패 시 AI 초안을 후보 없이 반환 |
 
 `/internal/**`은 Gateway 외부 접근 차단 대상입니다. 내부 API의 구체적인 서비스 간 인증·네트워크 통제는 인프라 구현에서 별도로 검증합니다.
 
