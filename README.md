@@ -6,21 +6,17 @@ Sporty는 서울시 공공체육시설을 찾고 운동 매치를 개설·참여
 
 ## 문서 읽는 순서
 
-1. [확정 API 계약 v1.0](docs/contracts/api-spec-v1.0.md) — 외부 31개·내부 4개 경로, Gateway 인증, 관리자 통계·Prometheus 조회. 상세 JSON과 오류는 팀 확정 PDF 원본 부록 참조
-2. [최신 범위와 v0.1 차이](docs/decisions/2026-10-30-scope-update.md) — 확정 API와 구분되는 Kafka·DB·검증 작업
-3. [수행계획서 v0.1](docs/planning/project-plan-v0.1.md) · [요구사항 v0.1](docs/requirements/requirements-v0.1.md) — 원본 Word 변환
-4. [로컬 인프라 구성](docs/architecture/infra-overview.md) — 전달된 5개 업무 서비스 그림과 최신 Compose의 역할·포트·관측 구성 대조
-5. [서비스별 DB 설계 R8](docs/data/schema-r8.md) · [R8 신규 설치 SQL](docs/data/02_Sporty_v2_A_R8_DDL.sql) · [R7→R8 변경 SQL](docs/data/03_Sporty_v2_R7_to_R8.sql) · [적용 결과 확인 SQL](docs/data/04_Sporty_v2_R8_verify.sql) — 현재 스키마·적용 대상·검사 항목
-6. [R7 설계](docs/data/schema-r7.md) · [R7 DDL](docs/data/01_Sporty_v2_A_R7_DDL.sql) · [R4 대조](docs/data/schema-r4-review.md) — 이전 스키마와 변경 이력
-7. [API·Kafka 계약 v0.1](docs/contracts/api-contract-v0.1.md) · [테이블 명세 v0.1](docs/data/table-spec-v0.1.md) — 원본 Excel 시트를 각 문서의 장으로 변환한 역사적 초안
-8. [테스트 케이스 v0.1](docs/testing/test-cases-v0.1.md) — 원본 Excel 시트 변환, 전체 `Not Run`
+1. [확정 요구사항 v1.0](docs/requirements/requirements-v1.0.md) ([PDF 원본](docs/requirements/Sporty_v2_요구사항_명세서.pdf)) · [확정 수행계획서 v1.0](docs/planning/project-plan-v1.0.md) ([PDF 원본](docs/planning/Sporty_v2_프로젝트_수행계획서.pdf)) — 2026-11-02 팀 기준. Markdown은 열람용 요약이며 세부 사항은 원본을 우선
+2. [R10 테이블 명세](docs/data/table-spec-r10.md) ([Excel 원본](docs/data/Sporty_R10_테이블명세서.xlsx)) — 7개 시트 전체, 4개 DB·16개 테이블·130개 컬럼. 신규/기존 DB 적용 경로와 선택 제약은 별도
+3. [API 계약 v1.0](docs/contracts/api-spec-v1.0.md) — API별 최신 수정은 팀 계약·해당 변경 PR과 대조. 원본 상세 JSON·오류 코드를 우선
+4. [로컬 인프라 구성](docs/architecture/infra-overview.md) · [최신 범위와 v0.1 차이](docs/decisions/2026-10-30-scope-update.md)
+5. [R8 설계](docs/data/schema-r8.md) · [R8 SQL](docs/data/02_Sporty_v2_A_R8_DDL.sql) — 과거 버전 이력. R10 DB에 신규 설치·마이그레이션용으로 사용하지 않음
+6. [요구사항 v0.1](docs/requirements/requirements-v0.1.md) · [수행계획 v0.1](docs/planning/project-plan-v0.1.md) · [테이블 v0.1](docs/data/table-spec-v0.1.md) · [테스트 케이스 v0.1](docs/testing/test-cases-v0.1.md) — 팀 합의 전 역사적 초안
 
 ## 상태와 변경 규칙
 
-**HTTP API는 팀 확정 `Sporty_v2 API 명세서 v1.0`(2026-10-30)이 기준입니다.** 저장소의 `api-spec-v1.0.md`는 그 내용을 탐색하기 쉽게 정리한 Markdown 요약입니다. 상세 요청·응답 JSON 및 API별 오류 코드는 원본 PDF 부록을 우선합니다.
+**확정 원본의 우선순위:** 요구사항·수행계획은 2026-11-02 v1.0 PDF, DB 테이블 명세는 R10 Excel입니다. Markdown은 GitHub 탐색용이며 원본의 모든 세부 항목을 대신하지 않습니다. 백엔드의 실제 R10 신규 설치 DDL·R9→R10 마이그레이션과 운영 DB 적용 결과는 별도로 확인합니다. 이 저장소의 R8 SQL은 변경 이력으로 유지합니다. 특히 R9 전용 변경 SQL을 R8 DB에 실행하지 마세요.
 
-DB 문서는 [R8 설계·적용 절차](docs/data/schema-r8.md)를 먼저 확인하세요. 새 MSA DB 설치와 R7→R8 변경은 서로 다른 SQL을 사용하며, 작성된 SQL만으로 실제 DB 적용이나 서비스 연동 성공을 증명할 수 없습니다. 백엔드 Compose의 빈 DB 초기화에는 [backend의 R8 스키마](https://github.com/batontouch-sporty/backend/blob/main/docker/mariadb/schema.sql)가 사용됩니다.
+API·이벤트 계약의 필드, 상태 코드, 오류는 승인된 최신 원본/PR과 대조합니다. 수행계획서 Day 2의 `R8 DDL`은 작성 당시 일정이고 R10 결정 이후의 설치 기준이 아닙니다. 요구사항이나 계획의 항목을 구현·테스트 완료로 간주하지 않습니다. 실제 완료 상태는 각 서비스 코드, CI, 통합 테스트·배포 증빙을 확인해 기록합니다.
 
-나머지 v0.1 산출물은 **팀 합의 전 초안**입니다. 변환 과정에서 원문 ID(`USR`, `EM`, `MSA`, `API`, `EVT`, `TC`, `D`)와 값, 시트 구성을 유지했습니다. `v0.1`의 4개 서비스, AI projection 이벤트, 단순 회원 탈퇴 흐름은 최신 API·범위와 다릅니다. 문서의 계획·예시는 구현 완료나 실행 성공의 증거가 아닙니다.
-
-팀 합의 후 API·이벤트·DB 소유권과 TC를 함께 갱신하고, 각 변경의 근거와 실행 증빙을 남깁니다. 예약·결제 기능은 범위에 포함하지 않으며 공공 예약 URL을 안내합니다.
+과거 v0.1과 R7/R8 자료는 설계 변경을 추적할 수 있도록 보관합니다. 시설의 실제 예약·결제는 범위 밖이며 공공 예약 URL을 안내합니다.
