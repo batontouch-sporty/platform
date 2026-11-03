@@ -2,6 +2,7 @@
 
 > 기준: 팀 최종 Excel 95개 + 개인 v0.5 11종 중 정상 탈퇴 1종을 기존 TC-INT-09에 합침 + 신규 고유 시나리오 10개 + 노션 v0.4 정원 경계 1개. 2026-11-03.
 > 이 문서는 테스트 정의 및 기존 실행 보고서의 판정을 통합해 보여줍니다. 이번 문서 작성 중 106개 테스트를 재실행하지 않았습니다.
+> **2026-11-03 후속:** backend PR #144와 config-repo PR #18 병합에 따라 TC-SAGA-003의 현재 재시험 기대값을 보정했습니다. 아래 10 Pass/1 Fail은 **v0.5 과거 실행 결과**이며 새 코드의 검증 결과가 아닙니다.
 
 ## 판정과 중복 정리
 
@@ -14,9 +15,9 @@
 
 **중복 매핑:** `TC-SAGA-001` 정상 탈퇴의 HTTP·Saga·매치·참가 정리는 `TC-INT-09`의 동일 판정 목적과 합쳤습니다. 원래 ID는 별칭으로 남겨 기존 실행 보고서와 연결합니다. 다른 10종은 단일 API·서비스 검증과 호출 경로가 일부 같더라도, 비동기 최종 상태·포인트·장애 복구 또는 시계열 관측의 독립적인 합격 조건이 있어 유지했습니다.
 
-**기존 보고서 기준:** [R10 v0.5 최종 실행 보고서](r10-v05-execution-report.md)는 11종 Pass 10, Fail 1을 기록했습니다. 원시 증빙은 저장소 바깥의 로컬 경로를 가리켜 GitHub만으로 재현할 수 없습니다. 이번 통합에서 그 보고서 판정을 연결했으며 원본 Not Run 94개와 신규 경계 1개를 임의로 Pass 처리하지 않았습니다. `TC-SAGA-003`은 TIMED_OUT/ACTIVE 이후 늦은 CLEANED로 매치가 CANCELLED인 정합성 결함이므로 Fail을 유지합니다.
+**기존 보고서 기준:** [R10 v0.5 최종 실행 보고서](r10-v05-execution-report.md)는 11종 Pass 10, Fail 1을 기록했습니다. 원시 증빙은 저장소 바깥의 로컬 경로를 가리켜 GitHub만으로 재현할 수 없습니다. 이번 통합에서 그 보고서 판정을 연결했으며 원본 Not Run 94개와 신규 경계 1개를 임의로 Pass 처리하지 않았습니다. `TC-SAGA-003`의 과거 실행은 TIMED_OUT/ACTIVE 뒤 늦은 CLEANED로 Match가 CANCELLED인 정합성 결함이어서 Fail입니다. [PR #144](https://github.com/batontouch-sporty/backend/pull/144) 병합으로 현재 기대값이 바뀌었지만 통합 재시험 전에는 새 Pass로 바꾸지 않습니다.
 
-**계약 재확인:** Excel의 일부 항목은 `identity-service`, 탈퇴 204, 생성·참가 201, 4서비스 등 과거 기준입니다. 해당 행의 이름·R10 기대값을 보정했습니다. [2026-11-03 노션 API 요약](../contracts/api-spec-2026-11-03-v0.4.md)과 연결된 원문을 최신 기준으로 삼습니다. [10/30 API v1.0](../contracts/api-spec-v1.0.md)의 A9/A14 201과 최소 정원 1은 당시 설명입니다. 응답 코드·오류 코드가 확정되지 않은 기존 행은 원문을 남기고 실제 명세 확인 전 Pass 판정을 금지합니다.
+**계약 재확인:** Excel의 일부 항목은 `identity-service`, 탈퇴 204, 생성·참가 201, 4서비스 등 과거 기준입니다. 해당 행의 이름·R10 기대값을 보정했습니다. [2026-11-03 API v0.5 보완](../contracts/api-spec-2026-11-03-v0.5.md)과 연결된 원문을 최신 기준으로 삼습니다. [10/30 API v1.0](../contracts/api-spec-v1.0.md)의 A9/A14 201과 최소 정원 1은 당시 설명입니다. 응답 코드·오류 코드가 확정되지 않은 기존 행은 원문을 남기고 실제 명세 확인 전 Pass 판정을 금지합니다.
 
 ## 통합 매트릭스
 
@@ -1099,16 +1100,16 @@
 - **실행 일시/실제 결과:** — · 거절 보상 보고서 PASS
 - **결함/증빙:** — · [기존 보고서](r10-v05-execution-report.md)
 
-#### TC-SAGA-003 · 타임아웃 및 늦은 CLEANED 정합성
+#### TC-SAGA-003 · 마감 시 Match 결과 재조회와 전달 지연
 
-- **요구/우선/유형/담당:** A3, A28 · P0 · Saga/포인트/관측 E2E · user-service·match-service
-- **사전조건:** Match Consumer만 중지, User/Kafka/DB 정상; 5분+30초+스캔 주기 확인
-- **절차:** A3의 202·PROCESSING 및 claim_token 기록 → 기한 후 TIMED_OUT/ACTIVE·A28 확인 → Match 복구 후 뒤늦은 CLEANED와 매치 취소 상태를 양 DB에서 대조 → WARN/지표와 운영 조치·후속 이슈 기록
-- **입력/데이터:** R10·격리 fixture; requestId/eventId·KST 기록
-- **기대 결과:** 회원 상태 보호뿐 아니라 매치·회원 간 정합성 확인. 기존 보고: 회원 ACTIVE인데 매치 CANCELLED → FAIL
-- **단계/실행 상태:** 11종 v0.5에서 통합 · Fail (기존 보고서)
-- **실행 일시/실제 결과:** — · 늦은 CLEANED 뒤 ACTIVE 회원의 매치·방장 참가 CANCELLED 불일치
-- **결함/증빙:** — · [기존 보고서](r10-v05-execution-report.md)
+- **요구/우선/유형/담당:** A3, A28, NFR-03 · P0 · Saga/포인트/관측 E2E · user-service·match-service
+- **사전조건:** backend PR #144와 config-repo PR #18을 포함한 최신 main; config-service 재시작 후 Feign 타임아웃 적용. 격리 fixture에서 User·Match·Kafka·DB의 시각, sagaId·requestEventId·userId·deadlineAt을 기록한다.
+- **절차:** A3 202·PROCESSING 확인 → 분기 A는 Match 정리와 결과 Outbox를 **마감 전에 커밋**하고 결과 Kafka 발행/소비만 마감+30초 뒤로 지연 → User의 내부 조회 결과 및 최종 상태 확인 → 지연된 이벤트 전달 후 중복/지표 확인. B 미처리, C 거절, D 조회 실패도 각각 분리해 재시험한다. Match 전체를 중단해 정리 자체를 마감 후 시작시키는 방식은 A의 재현 방법이 아니다.
+- **입력/데이터:** R10 격리 환경·분기별 별도 회원/매치/Saga·Outbox·Kafka·포인트 원장과 KST 시각
+- **현재 기대 결과:** A CLEANED → WITHDRAWN/CLEANED, 뒤에 온 이벤트는 정상 중복(late 경보 없음). B NONE → TIMED_OUT/ACTIVE, 뒤늦은 정리는 DEADLINE_EXCEEDED. C REJECTED → REJECTED/ACTIVE. D 409·5xx·연결 실패·응답 식별 불일치 → WITHDRAWING/PROCESSING 유지 후 재확인. Match의 처리 결과와 회원·매치·포인트 정합성 확인.
+- **단계/실행 상태:** PR #144 병합 후 재시험 · **Not Run (v0.6)**; v0.5는 Fail (기존 보고서)
+- **실행 일시/실제 결과:** 새 실행 — · 과거에는 ACTIVE 회원의 매치·방장 참가가 CANCELLED로 남음
+- **결함/증빙:** [기존 보고서](r10-v05-execution-report.md) · [v0.6 재시험 명세](k6-saga-chaos-test-cases-v0.6.md)
 
 #### TC-POINT-001 · 생성·참가 보증금 단일 차감
 
@@ -1218,11 +1219,12 @@
 
 ### TC-SAGA-003 → TC-SAGA-003
 
-- **연결:** 회원 상태 보호뿐 아니라 매치·회원 간 정합성 확인. 기존 보고: 회원 ACTIVE인데 매치 CANCELLED → FAIL
-1. A3의 202·PROCESSING 및 claim_token 기록
-2. 기한 후 TIMED_OUT/ACTIVE·A28 확인
-3. Match 복구 후 뒤늦은 CLEANED와 매치 취소 상태를 양 DB에서 대조
-4. WARN/지표와 운영 조치·후속 이슈 기록
+- **연결:** v0.5의 TIMED_OUT/ACTIVE + 늦은 CLEANED 정합성 FAIL은 과거 이력. PR #144 이후 현재 기준은 Match의 정리 커밋 여부를 마감 뒤 내부 조회로 확인한다.
+1. A3 202·PROCESSING 및 claim_token=requestEventId, deadlineAt 기록
+2. 마감 전에 Match 정리·결과 Outbox 커밋, 결과 이벤트 전달만 지연
+3. 마감+유예 후 내부 조회 CLEANED → WITHDRAWN/CLEANED와 Match 취소·포인트 정책 일치 확인
+4. 뒤늦은 동일 CLEANED 이벤트는 정상 중복이며 late 카운터·경보 미증가 확인
+5. NONE→TIMED_OUT/ACTIVE, REJECTED→REJECTED/ACTIVE, 조회 실패→WITHDRAWING/PROCESSING 유지·재시도도 분리 확인
 
 ### TC-POINT-001 → TC-POINT-001
 
@@ -1305,7 +1307,7 @@
 
 - Not Run: 미실행. Pass: 해당 TC의 HTTP·비동기·DB·이벤트·관측을 실제 대조하고 환경/SHA/증빙을 기록. Fail: 기대값 위반, 결함 URL과 재현 절차를 기록. Blocked: 환경·계측·권한 등 차단 이유와 재시험 계획을 기록.
 - 기존 보고서의 Pass 10 / Fail 1은 당시 환경의 기록입니다. 다른 코드 조합에서의 회귀 검증을 뜻하지 않습니다. 세부 자료는 [최종 실행 보고서](r10-v05-execution-report.md)와 [모니터링 검증 기록](r10-v05-monitoring-validation.md)을 참고합니다.
-- TC-SAGA-003은 Fail을 유지하고 정합성 수정·재실행 전 전체 통과로 보고하지 않습니다. 원본 Excel 95개 중 다른 94개와 신규 TC-EM-18은 Not Run입니다.
+- TC-SAGA-003의 **v0.5 실행 Fail은 이력으로 유지**합니다. PR #144 병합만으로 재시험 Pass를 주장하지 않습니다. v0.6은 Not Run이며 실행 환경 SHA·분기별 증빙을 남긴 뒤 판정합니다. 원본 Excel 95개 중 다른 94개와 신규 TC-EM-18은 Not Run입니다.
 - 회원·매치·포인트·알림 케이스가 같은 요청을 재사용하면 requestId/eventId, 테스트 환경/SHA, 원장·이벤트 증거를 서로 연결하고 확인하지 않은 분기를 중복 Pass로 기록하지 않습니다.
 
 ## 출처와 변환
