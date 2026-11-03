@@ -2,6 +2,8 @@
 
 > **확정 원본:** [Sporty_R10_테이블명세서.xlsx](Sporty_R10_테이블명세서.xlsx). 아래는 7개 시트를 값 기준으로 옮긴 것입니다. 데이터 타입·NULL·제약·승인 상태는 원본과 백엔드 PR #126의 R10 DDL을 우선합니다. 이 문서 자체가 팀 DB에 마이그레이션을 적용했다는 증거는 아닙니다.
 
+> **2026-11-03 PR #144 데이터 영향:** R10 DDL·테이블·컬럼·인덱스·교차 DB 참조 규칙은 변경되지 않았습니다. user-service는 기존 `user_db.withdrawal_saga`의 `saga_id`, `user_id`, `claim_token`, `deadline_at`, `status`를 사용하고, match-service는 기존 `match_db.outbox_event`의 커밋된 탈퇴 결과를 읽기 전용 내부 API로 제공합니다. 조회 실패 횟수는 Micrometer Counter이지 DB 컬럼이 아닙니다. 상세 판정은 [결정 기록](../decisions/2026-11-03-withdrawal-result-reconciliation.md)을 따릅니다. R10 Excel의 16개 테이블·130개 컬럼 원본 수치는 그대로입니다.
+
 ## 기준과 적용 경계
 
 - MariaDB 서버 1대, 서비스 DB 4개, 테이블 **16개**, 컬럼 **130개**, 기본 물리 FK **7개**(모두 동일 DB 내부). AI DB는 없습니다.

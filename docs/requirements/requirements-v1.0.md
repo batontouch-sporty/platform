@@ -2,6 +2,8 @@
 
 > **확정 원본:** [Sporty_v2_요구사항_명세서.pdf](Sporty_v2_요구사항_명세서.pdf) · 이상혁 · 2026-11-02. 이 문서는 GitHub 탐색용 요약입니다. 문구·우선순위·담당·완료 조건의 세부 사항은 원본 PDF를 우선합니다. 설계 확정과 구현·테스트 완료는 별개입니다.
 
+> **2026-11-03 후속 변경:** 탈퇴 Saga 시간 초과 판정은 [PR #144 결정](../decisions/2026-11-03-withdrawal-result-reconciliation.md)과 [API v0.5](../contracts/api-spec-2026-11-03-v0.5.md)를 우선합니다. 아래 PDF의 5분 후 일괄 ACTIVE 복구와 늦은 CLEANED 경보 문장은 변경 전 기준입니다.
+
 ## 범위와 기준
 
 | 구분 | 확정 내용 |
@@ -45,10 +47,10 @@
 | ID | 검증 기준 요약 |
 | --- | --- |
 | NFR-01~02 | 동시 100명 매치 조회·참가 p95/오류율 측정 및 경보; Feign CB/Fallback, 외부 AI·공공 API 장애 대체 |
-| NFR-03 | 탈퇴 Saga Outbox, claim_token/requestEventId, match 마감 검사, **5분+30초 유예** 타임아웃 복구, 늦은 결과 로그·지표·경보. 성공·거절·시간 초과 3종 검증 |
+| NFR-03 | 탈퇴 Saga Outbox·claim_token/requestEventId. **마감 5분+유예 30초 이후 Match 결과를 내부 조회:** CLEANED는 WITHDRAWN, REJECTED는 ACTIVE, NONE은 TIMED_OUT/ACTIVE, 조회 실패·불일치는 WITHDRAWING 유지·재확인. 이미 CLEANED 완료 후 같은 결과 이벤트는 정상 중복(late 경보 없음). 기존 3종과 결과 전달 지연·조회 실패를 분기별 검증 |
 | NFR-04~05 | eventId 멱등, 재시도 3회·DLT; JWT·내부 API·DB 최소 권한·비밀 보호 |
 | NFR-06~07 | 전 서비스 관측·추적, local/dev/prod 동일 코드와 Config 연결 실패 시 기동 차단 |
 
 Java 17, Spring Boot 3.5, Spring Cloud 2025.0, Gradle·MariaDB를 사용합니다. 시설 예약은 외부 링크만 제공하며 허위 출석 검증은 범위 밖입니다. 기능 동결은 11월 4일 18:00, 산출물 제출은 11월 5일 09:00입니다.
 
-**원본 우선 원칙:** 이 요약과 PDF가 다르면 PDF를 따릅니다. API·이벤트·DDL은 해당 확정 원본의 버전과 맞춰 검토하며, 실제 구현 상태는 코드·테스트 증빙으로 별도 판정합니다.
+**원본 우선 원칙:** 이 요약과 PDF가 다르면 PDF를 따르되, 위에 명시한 2026-11-03 탈퇴 Saga 후속 결정은 변경 전 PDF 문구보다 우선합니다. API·이벤트·DDL은 해당 확정 원본의 버전과 맞춰 검토하며, 실제 구현 상태는 코드·테스트 증빙으로 별도 판정합니다.
