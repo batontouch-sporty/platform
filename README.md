@@ -9,9 +9,10 @@ Sporty는 서울시 공공체육시설을 찾고 운동 매치를 개설·참여
 1. [확정 요구사항 v1.0](docs/requirements/requirements-v1.0.md) ([PDF 원본](docs/requirements/Sporty_v2_요구사항_명세서.pdf)) · [확정 수행계획서 v1.0](docs/planning/project-plan-v1.0.md) ([PDF 원본](docs/planning/Sporty_v2_프로젝트_수행계획서.pdf)) — 2026-11-02 팀 기준. Markdown은 열람용 요약이며 세부 사항은 원본을 우선
 2. [R10 테이블 명세](docs/data/table-spec-r10.md) ([Excel 원본](docs/data/Sporty_R10_테이블명세서.xlsx)) — 7개 시트 전체, 4개 DB·16개 테이블·130개 컬럼. 신규/기존 DB 적용 경로와 선택 제약은 별도
 3. [API 계약 v1.0](docs/contracts/api-spec-v1.0.md) — API별 최신 수정은 팀 계약·해당 변경 PR과 대조. 원본 상세 JSON·오류 코드를 우선
-4. [로컬 인프라 구성](docs/architecture/infra-overview.md) · [최신 범위와 v0.1 차이](docs/decisions/2026-10-30-scope-update.md)
-5. [R8 설계](docs/data/schema-r8.md) · [R8 SQL](docs/data/02_Sporty_v2_A_R8_DDL.sql) — 과거 버전 이력. R10 DB에 신규 설치·마이그레이션용으로 사용하지 않음
-6. [요구사항 v0.1](docs/requirements/requirements-v0.1.md) · [수행계획 v0.1](docs/planning/project-plan-v0.1.md) · [테이블 v0.1](docs/data/table-spec-v0.1.md) · [테스트 케이스 v0.1](docs/testing/test-cases-v0.1.md) — 팀 합의 전 역사적 초안
+4. [R10 통합 테스트 케이스 105개](docs/testing/test-cases-r10-consolidated.md) ([PDF](docs/testing/test-cases-r10-consolidated.pdf)) — 팀 Excel 95개와 개인 11종의 중복 1건을 통합한 명세. 기존 실행 보고서 기준 Pass 10·Fail 1, 나머지 94개는 Not Run. 새 실행 결과가 아님
+5. [로컬 인프라 구성](docs/architecture/infra-overview.md) · [최신 범위와 v0.1 차이](docs/decisions/2026-10-30-scope-update.md)
+6. [R8 설계](docs/data/schema-r8.md) · [R8 SQL](docs/data/02_Sporty_v2_A_R8_DDL.sql) — 과거 버전 이력. R10 DB에 신규 설치·마이그레이션용으로 사용하지 않음
+7. [요구사항 v0.1](docs/requirements/requirements-v0.1.md) · [수행계획 v0.1](docs/planning/project-plan-v0.1.md) · [테이블 v0.1](docs/data/table-spec-v0.1.md) · [테스트 케이스 v0.1](docs/testing/test-cases-v0.1.md) — 팀 합의 전 역사적 초안
 
 ## 상태와 변경 규칙
 
