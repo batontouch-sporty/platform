@@ -8,8 +8,8 @@ Sporty는 서울시 공공체육시설을 찾고 운동 매치를 개설·참여
 
 1. [확정 요구사항 v1.0](docs/requirements/requirements-v1.0.md) ([PDF 원본](docs/requirements/Sporty_v2_요구사항_명세서.pdf)) · [확정 수행계획서 v1.0](docs/planning/project-plan-v1.0.md) ([PDF 원본](docs/planning/Sporty_v2_프로젝트_수행계획서.pdf)) — 2026-11-02 팀 기준. Markdown은 열람용 요약이며 세부 사항은 원본을 우선
 2. [R10 테이블 명세](docs/data/table-spec-r10.md) ([Excel 원본](docs/data/Sporty_R10_테이블명세서.xlsx)) — 7개 시트 전체, 4개 DB·16개 테이블·130개 컬럼. 신규/기존 DB 적용 경로와 선택 제약은 별도
-3. [API 계약 v1.0](docs/contracts/api-spec-v1.0.md) — API별 최신 수정은 팀 계약·해당 변경 PR과 대조. 원본 상세 JSON·오류 코드를 우선
-4. [R10 통합 테스트 케이스 105개](docs/testing/test-cases-r10-consolidated.md) ([PDF](docs/testing/test-cases-r10-consolidated.pdf)) — 팀 Excel 95개와 개인 11종의 중복 1건을 통합한 명세. 기존 실행 보고서 기준 Pass 10·Fail 1, 나머지 94개는 Not Run. 새 실행 결과가 아님
+3. [2026-11-03 팀 노션 API 명세 v0.4 요약](docs/contracts/api-spec-2026-11-03-v0.4.md) — 외부 35·내부 4개 경로와 R10 보증금·출석·포인트 변경을 반영. 요청·응답의 전체 필드와 오류 판정은 연결된 팀 노션 원문 우선. [10/30 API v1.0](docs/contracts/api-spec-v1.0.md)은 이력
+4. [R10 통합 테스트 케이스 106개](docs/testing/test-cases-r10-consolidated.md) ([PDF](docs/testing/test-cases-r10-consolidated.pdf)) — 팀 Excel 95개와 개인 11종의 중복 1건을 통합하고 정원 1명 거절 경계 케이스를 추가. 기존 실행 보고서 기준 Pass 10·Fail 1, 나머지 95개는 Not Run. 새 실행 결과가 아님
 5. [로컬 인프라 구성](docs/architecture/infra-overview.md) · [최신 범위와 v0.1 차이](docs/decisions/2026-10-30-scope-update.md)
 6. [R8 설계](docs/data/schema-r8.md) · [R8 SQL](docs/data/02_Sporty_v2_A_R8_DDL.sql) — 과거 버전 이력. R10 DB에 신규 설치·마이그레이션용으로 사용하지 않음
 7. [요구사항 v0.1](docs/requirements/requirements-v0.1.md) · [수행계획 v0.1](docs/planning/project-plan-v0.1.md) · [테이블 v0.1](docs/data/table-spec-v0.1.md) · [테스트 케이스 v0.1](docs/testing/test-cases-v0.1.md) — 팀 합의 전 역사적 초안
@@ -18,6 +18,6 @@ Sporty는 서울시 공공체육시설을 찾고 운동 매치를 개설·참여
 
 **확정 원본의 우선순위:** 요구사항·수행계획은 2026-11-02 v1.0 PDF, DB 테이블 명세는 R10 Excel입니다. Markdown은 GitHub 탐색용이며 원본의 모든 세부 항목을 대신하지 않습니다. 백엔드의 실제 R10 신규 설치 DDL·R9→R10 마이그레이션과 운영 DB 적용 결과는 별도로 확인합니다. 이 저장소의 R8 SQL은 변경 이력으로 유지합니다. 특히 R9 전용 변경 SQL을 R8 DB에 실행하지 마세요.
 
-API·이벤트 계약의 필드, 상태 코드, 오류는 승인된 최신 원본/PR과 대조합니다. 수행계획서 Day 2의 `R8 DDL`은 작성 당시 일정이고 R10 결정 이후의 설치 기준이 아닙니다. 요구사항이나 계획의 항목을 구현·테스트 완료로 간주하지 않습니다. 실제 완료 상태는 각 서비스 코드, CI, 통합 테스트·배포 증빙을 확인해 기록합니다.
+API·이벤트 계약의 필드, 상태 코드, 오류는 승인된 최신 원본/PR과 대조합니다. 특히 10/30 API v1.0의 매치 생성·참가 201과 정원 1명 설명은 최신 노션의 보증금 활성 R10 계약과 다릅니다. 수행계획서 Day 2의 `R8 DDL`은 작성 당시 일정이고 R10 결정 이후의 설치 기준이 아닙니다. 요구사항이나 계획의 항목을 구현·테스트 완료로 간주하지 않습니다. 실제 완료 상태는 각 서비스 코드, CI, 통합 테스트·배포 증빙을 확인해 기록합니다.
 
 과거 v0.1과 R7/R8 자료는 설계 변경을 추적할 수 있도록 보관합니다. 시설의 실제 예약·결제는 범위 밖이며 공공 예약 URL을 안내합니다.
