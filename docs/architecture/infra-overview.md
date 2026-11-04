@@ -21,7 +21,7 @@
 
 | 구성 요소 | 역할과 경계 |
 | --- | --- |
-| MariaDB | 서버 1대 안에 `user_db`, `match_db`, `facility_db`, `notification_db` 네 서비스 소유 DB. AI의 소유 DB는 없음. 서비스 간 ID는 논리 참조하며 교차 DB FK·직접 JOIN을 사용하지 않음. [R8 DB 설계](../data/schema-r8.md) 참고 |
+| MariaDB | 서버 1대 안에 `user_db`, `match_db`, `facility_db`, `notification_db` 네 서비스 소유 DB. AI의 소유 DB는 없음. 서비스 간 ID는 논리 참조하며 교차 DB FK·직접 JOIN을 사용하지 않음. [R10 테이블 명세](../data/table-spec-r10.md) 참고 |
 | Kafka | 서비스 사이 이벤트 전달. 그림의 화살표는 모든 서비스가 모든 토픽을 발행·구독한다는 의미가 아님 |
 | Redis | 회원 인증의 refresh token 저장 |
 | discovery-service (Eureka) | 내부 포트 8761, 서비스 등록·발견 |

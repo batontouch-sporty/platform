@@ -1,6 +1,6 @@
 # 2026-11-03 탈퇴 Saga 마감 시 결과 재조회
 
-**상태:** [backend PR #144](https://github.com/batontouch-sporty/backend/pull/144), [config-repo PR #18](https://github.com/batontouch-sporty/config-repo/pull/18) 병합. 최신 main에서의 Compose 종단 간 재시험은 별도이며 완료로 표시하지 않는다.
+**상태:** [backend PR #144](https://github.com/batontouch-sporty/backend/pull/144), [config-repo PR #18](https://github.com/batontouch-sporty/config-repo/pull/18) 병합. 최신 재시험 판정은 [R10 v0.6 최종 실행 보고서](../testing/r10-v06-execution-report.md)를 따른다.
 
 ## 배경과 결정
 
@@ -23,4 +23,6 @@
 
 ## 검증과 남은 제약
 
-[TC-SAGA-003 v0.6](../testing/k6-saga-chaos-test-cases-v0.6.md)에서 “정리 커밋은 마감 전·결과 이벤트만 지연”을 먼저 재현한다. 이어 NONE·REJECTED·조회 실패/식별 불일치와 Match 잠금 경합을 분기별로 확인한다. 과거 [v0.5 FAIL 보고](../testing/r10-v05-execution-report.md)는 그대로 남긴다. 서버 간 시계 차이가 유예를 넘거나 Match가 장기 장애이면 보장이 약해지고 회원이 WITHDRAWING에 머물 수 있다. MariaDB GET_LOCK과 실제 지연 Outbox/Kafka 경로는 종단 간 재시험 전까지 검증 완료로 표시하지 않는다.
+사용자 제공 [R10 v0.6 최종 실행 보고서](../testing/r10-v06-execution-report.md)에서 TC-SAGA-003의 CLEANED·REJECTED 결과 전달 지연, NONE 타임아웃, 조회 실패 뒤 복구 및 늦은 Kafka 중복 무영향을 PASS로 기록했습니다. 이 결과를 통합 테스트 케이스의 ST-SAGA-03~05에 반영했습니다.
+
+409·500·식별 불일치는 User 조회 전용 프록시로 격리 주입했으며 실제 Match 정리 트랜잭션 경합에서 발생하는 409 자체는 직접 재현하지 않았습니다. 보고서의 원 PNG·JSON·verdict 파일은 이번 첨부에 포함되지 않았습니다. 서버 간 시계 차이와 Match 장기 장애로 WITHDRAWING에 머물 수 있는 제약은 유지합니다.

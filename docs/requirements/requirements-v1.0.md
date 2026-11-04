@@ -31,7 +31,7 @@
 | 관리자 | AD-01~04 | 매치·탈퇴 Saga 통계, ADMIN 전용 Prometheus 즉시/범위 조회, React 운영 대시보드. P0 |
 | 화면 | UI-01~04 | Gateway 단일 호출·알림/탈퇴 상태·매치 취소/대기 버튼은 P0; 포인트 UI는 P1 |
 
-매칭 API·상태 코드와 오류 코드는 [API 계약](../contracts/api-spec-v1.0.md) 및 최신 팀 계약을 함께 대조합니다. 이 요구사항 PDF는 `POST /api/matches`의 최소 정원 등 업무 수용 기준이며, PDF에 명시된 경로는 서비스 내부 경로여서 Gateway 경유 주소와 구분합니다.
+매칭 API·상태 코드와 오류 코드는 [확정 API v0.5](../contracts/api-spec-2026-11-03-v0.5.md) 및 최신 팀 계약을 함께 대조합니다. 이 요구사항 PDF는 `POST /api/matches`의 최소 정원 등 업무 수용 기준이며, PDF에 명시된 경로는 서비스 내부 경로여서 Gateway 경유 주소와 구분합니다.
 
 ## MSA·핵심기술
 
