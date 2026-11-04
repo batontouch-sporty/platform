@@ -1,6 +1,6 @@
 # 2026-11-03 탈퇴 Saga 마감 시 결과 재조회
 
-**상태:** [backend PR #144](https://github.com/batontouch-sporty/backend/pull/144), [config-repo PR #18](https://github.com/batontouch-sporty/config-repo/pull/18) 병합. 최신 재시험 판정은 [R10 v0.6 최종 실행 보고서](../testing/r10-v06-execution-report.md)를 따른다.
+**상태:** [backend PR #144](https://github.com/batontouch-sporty/backend/pull/144), [config-repo PR #18](https://github.com/batontouch-sporty/config-repo/pull/18) 병합. 최신 전체 QA 판정은 [AWS 최종 QA 보고서](../testing/AWS_FINAL_QA_REPORT.md)를 따른다. 기존 로컬 11종 재시험 결과는 최종 테스트 케이스의 부록에 보존한다.
 
 ## 배경과 결정
 
@@ -23,6 +23,6 @@
 
 ## 검증과 남은 제약
 
-사용자 제공 [R10 v0.6 최종 실행 보고서](../testing/r10-v06-execution-report.md)에서 TC-SAGA-003의 CLEANED·REJECTED 결과 전달 지연, NONE 타임아웃, 조회 실패 뒤 복구 및 늦은 Kafka 중복 무영향을 PASS로 기록했습니다. 이 결과를 통합 테스트 케이스의 ST-SAGA-03~05에 반영했습니다.
+사용자 제공 [R10 v0.6 실행 보고서(최종 케이스 부록)](../testing/Sporty_v2_테스트_케이스_final_v1.1.md)에서 TC-SAGA-003의 CLEANED·REJECTED 결과 전달 지연, NONE 타임아웃, 조회 실패 뒤 복구 및 늦은 Kafka 중복 무영향을 PASS로 기록했습니다. 이 결과를 통합 테스트 케이스의 ST-SAGA-03~05에 반영했습니다.
 
 409·500·식별 불일치는 User 조회 전용 프록시로 격리 주입했으며 실제 Match 정리 트랜잭션 경합에서 발생하는 409 자체는 직접 재현하지 않았습니다. 보고서의 원 PNG·JSON·verdict 파일은 이번 첨부에 포함되지 않았습니다. 서버 간 시계 차이와 Match 장기 장애로 WITHDRAWING에 머물 수 있는 제약은 유지합니다.
